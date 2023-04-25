@@ -1,1 +1,3 @@
-add_executable(fileOperations 18_file_streams.cpp)
+add_executable( fileStreams 18_file_streams.cpp)
+add_executable( StreamsBuffer 19_streams_buffers.cpp)
+add_executable( unbuffered_input_output 20_unbuffered_input_output.cpp)
