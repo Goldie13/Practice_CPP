@@ -3,4 +3,9 @@ build
 
 # files
 log_out.txt
+sample_in.txt
+sample_out.txt
+sample.bin
+
+#configuration
 settings.json
