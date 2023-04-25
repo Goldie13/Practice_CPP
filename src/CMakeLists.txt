@@ -1,0 +1,3 @@
+add_executable(localVariable 1_LocalVariables.cpp)
+
+add_subdirectory(FileOperations)
