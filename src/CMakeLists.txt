@@ -1,3 +1,4 @@
 add_executable(localVariable 1_LocalVariables.cpp)
 
-add_subdirectory(FileOperations)
+add_subdirectory(4_FileOperations)
+add_subdirectory(5_Special_Member_Functions_And_Operators)
