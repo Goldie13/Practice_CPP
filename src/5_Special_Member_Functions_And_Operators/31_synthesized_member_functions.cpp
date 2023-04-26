@@ -102,6 +102,8 @@ int main()
 
     // THIS IS SHALLOW COPY
     // CAN BE RECTIFIED by EXPLICIT assignment operator function
+
+    //if we implement ctor explicity compiler will not synthesize default / empty constructor
      
     return 0;
 }
