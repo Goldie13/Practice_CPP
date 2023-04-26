@@ -1,1 +1,3 @@
 add_executable( 29_copy_constructor 29_copy_constructor.cpp)
+add_executable( 30_assignment_operator 30_assignment_operator.cpp)
+add_executable( 31_synthesized_member_functions 31_synthesized_member_functions.cpp)
