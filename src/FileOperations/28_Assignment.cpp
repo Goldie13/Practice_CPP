@@ -39,7 +39,7 @@ using namespace std;
 
 int main()
 {
-    string path{"/root/Anosh/Practice_CPP/assignment_in.txt"};
+    string path{"/root/Anosh/Practice_CPP/languages2.txt"};
     ifstream ifile(path, fstream::in);//in mode
 
     if(false == ifile.is_open()) {
@@ -57,10 +57,7 @@ int main()
         }
         for (auto i = output.begin(); i != output.end(); ++i)
         {
-            if( i != output.end()-1)
-                cout << *i << ", ";
-            else
-                cout << *i <<" ";
+            cout << *i <<" ";
         } cout<<endl;
         output.clear();
     }
