@@ -50,6 +50,5 @@ int main()
     cout<<"comp1 real: ";++comp1; comp1.print();//real:5
     cout<<"\ncomp2 real: ";++comp2; comp2.print();//real:6
     cout<<endl;
-    // cout<<"real: postfix: ";comp1.m_real;cout<<"\ncomp2 real: ";comp2.print();cout<<endl;
     return 0;
 }
