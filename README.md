@@ -33,9 +33,70 @@ stack | container adapter | - parsing expressions in compilers - checking unbala
 - Shape* pshape = &circle;// static type pointer to Shape
 - Shape& rshape = circle;// static type reference to Shape
 
-containers      |        type      |
+static      |        dynamic      |
 -------------   | ---------------  |
 | c++ always uses static typing | Only used for pointer or reference to a base class  |
 | type checking done by compiler | compiler does not decide which function to call |
 | less runtime overhead | more runtime overhead, member function is chosen at runtime using object in memory |
 | better optimization | no optimization |
+| static binding | dynamic binding: - reference or pointer to base class has to be used - member function was declared virtual in the base class |
+
+override      |        overload      |
+-------------   | ---------------  |
+same signature as parent | different signature from parent |
+doesnt stop dynamic binding | prevents dynamic binding |
+NA | may hide parent member function |
+introduced in c++11 | NA |
+
+### final keyword
+- introduced in c++11
+- final class cannot be derived from
+- final member function cannot be overridden in a child class
+- libraries often use "final"
+- library can provide class heirarchy or use one internally
+- users of the library cannot extend this class heirarchy
+
+### Virtual dtors
+- child object is stored in memory as a parent object followed by the child part
+- Shape* c = new circle; //created a obj in heap
+- delete c;// releasese memory; calls destructor
+- it calls shape dtor due to static binding if dtor is not virtual in base class
+- if we do not define destructor, compiler will synthesize for us which is not virtual by default
+- if we use pointer to base, that means derived part of object is not destroyed:memory leaks; resource leaks; undefined behaviour
+
+### Abstract base class (Interface in other languages)
+- a class with pure virtual member functions
+- we derive from an abstract base class, we must override all its pure virtual functions
+- otherwise our derived will also be virtual class 
+
+### Virtual functions implementation
+- member functionsa are not stored in object
+- they are implemented as global functions
+- when they are called, pointer to object is passed as an extra argument called "this"
+- when compiler encounters class which has virtual member function it creates & populates data structure
+called as vtable
+- when compiler sees call to virtual function it generates some extra code:
+    - this code is executed at runtime
+    - it checks dynamic type of the object
+    - it uses vtable to call correct version of the function
+- vtable stores the addresses of all member functions of the class which are decalared virtual
+- vtable is array of pointers to member functions
+- each virtual member function is identified by an index into the table
+- when virtual function is called compiler replaces names of the function by corresponding index in the table
+- runtime code will 
+    - determine object's dynamic type
+    - locate the vtable for that dynamic type
+    - look up the element in the vtable
+    - deference the function pointer & call it
+
+### Polymorphism
+- "many forms"
+- different types with same interface (programming language): they have the same behaviour
+- STL containers are an eg of polymorphism
+    - vector\<int> is different type from vector\<string>
+    - they have same interface regardless of type
+    - this parameteric polymorphism because element is the type (compile time)
+    - subtype polymorphism is dynamic binding (runtime)
+- advantages: avoids duplicate code; saves programmer time; ensures correct behaviour; code resuse
+
+
