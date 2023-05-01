@@ -16,3 +16,26 @@ hash_table | associative | | - unordered c++11 - uses hash-table instead of tree
 unordered (set, multiset, map, multimap) | associative | | - faster - reverse iterator not possible - will slow if hash is used - sorting we can populate into sort container
 queue/priority queue | container adapter | - Network data packets waiting CPU - must be processed in sequence - can access only front item but if you want other item access use vector or map - PQ: networking; OS schedulers; out of band communication | - DS where items are stored in order - follow fifo - defined in \<queue> - no support for other containers - PQ: std queue with strictly in arrival order - PS similar to queue - PQ: it orders the items with most priority in the front & least at back - PQ: if two items have equal priorities by default queue doesnt order them by arrival time - PQ implemented using vector or deque - same member functions like queue - push(1,3,5,2) into PQ it will populate PQ as 5,3,2,1 highest -> lowest priority - PQ: Only top() can be accessed - PQ: same order is not quaranteed in same priority instead nested maps 
 stack | container adapter | - parsing expressions in compilers - checking unbalanced paranthesis - implementing undo functionality - storing history for back/forward buttons in web browser | - DS which stores items in order in which they are inerted - when new items inserted items are at top - only top is accessible - follows lifo - implemented using deque - interfaces similar to PQ
+
+## Dervied class memory layout
+- Derived class obj is stored in memory as a base class obj followed by derived class part
+- when derived class obj is created, base class ctor is called first then derived ctor
+- when destroyed derived dtor is called first & then base class dtor
+- baseclass vehicle; child class aeroplane
+- memory layout will be vehicle - aeroplane
+
+## static vs dynamic type
+- static type used in variable declaration
+- int x{5};// static type int
+- int* px = &x; // static type pointer to int
+- Circle circle;// static type Circle
+- Circle* pcircle = &Circle;// static type pointer to Circle
+- Shape* pshape = &circle;// static type pointer to Shape
+- Shape& rshape = circle;// static type reference to Shape
+
+containers      |        type      |
+-------------   | ---------------  |
+| c++ always uses static typing | Only used for pointer or reference to a base class  |
+| type checking done by compiler | compiler does not decide which function to call |
+| less runtime overhead | more runtime overhead, member function is chosen at runtime using object in memory |
+| better optimization | no optimization |
