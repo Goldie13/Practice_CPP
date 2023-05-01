@@ -4,3 +4,5 @@ add_subdirectory(4_FileOperations)
 add_subdirectory(5_Special_Member_Functions_And_Operators)
 add_subdirectory(6_Algorithms_Lamda)
 add_subdirectory(7_Algorithms)
+add_subdirectory(8_containers)
+
