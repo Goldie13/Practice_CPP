@@ -99,4 +99,249 @@ called as vtable
     - subtype polymorphism is dynamic binding (runtime)
 - advantages: avoids duplicate code; saves programmer time; ensures correct behaviour; code resuse
 
+### where to handle errors:
+- we should not mix up GUI with network code
+- error handling code is a distraction from 
+- if uncaught exception is not handled by any of the catch blocks after the try block program will try to find one in the "enclosing scope"
+- if it doesnt find one, it will jump out of current function & look for a handler in functions caller
+- if it does still not find one, it jumps to that functions caller & so on
+- if there is no suitable handler, the program terminates
+- when exception is thrown, several things happen:
+    - thrown object is copied into special area of memory
+    - area is setup by compiler
+        - area is accessible by any catch block which can handle object type
+        - every local variable in scope is destroyed
+            - including the original thrown object
+    - program immediately leaves the scope
+        - it doesnt execute any further instructions of any type
+    - stack unwinfing:
+        - program will look for catch that can handle exception
+        - if it cannot find one, it will immediately destroy all local vars & exit the current scope
+        - it then looks enclosing scope
+        - this continues untill it finds suitable handler
+            - it reaches main() without finding one, program calls std::terminate()
+        - process of repeatedly destroying local vars exiting the current scope is called "stack unwinding"
 
+### std::exception heirarchy
+- c++ defines std::exception class
+- base class for an inheritance heirarchy
+    - consistent interface for exception objects
+    - enables polymorphism - reduces no of handlers needed
+- exception
+    - bad_alloc
+    - bad_cast
+    - logic_error
+        - out_or_range
+        - domain_error
+        - invalid_argument
+        - length_error
+    - runtime_error
+        - overflow_error
+        - underflow_error
+        - range_error
+
+- defines 5 public member functions
+    - ctor
+    - copy ctor
+    - assignment operator
+    - virtual member function what()
+    - virtual dtor
+- sub classes:
+    - bad_alloc
+        - thrown when memory allocation fails
+    - bad_cast
+        - thrown when dynamic cast fails
+    - logic_error
+        - parent class for error conditions resulting from fault logic
+    - runtime_error
+        - parent class for error conditions beyond programs control
+    - out_of_range
+        - attempt to access item outside range
+        - vector.at(i)
+    - invalid_argument
+        - arguemnt to function is not accpetable
+        - eg passing non numeric to stoi()
+    -  domain_error
+        - argument to function is outside domain of application values
+        - eg invalid date field
+    - length_error
+        - length limit of an obj is exceeded
+        - eg appending too many elements to a string
+    - overflow_error
+        - result of computation is too large for the result var
+    - underflow_error
+        - result of floating point computation is too small for result var
+    - range error
+        - internal computation gives value which cannot be represented by result var
+
+### throw()
+- c++98 provided throw() exception specifier
+- this comes after function parameter list
+- eg void function() throw(){ }
+- if function throws exception which is not in the list, program is immediately terminated
+- void function() throw() { }: indicates that the function does not throw any exceptions
+- problem with throw():
+    - exceptions is not checked by the compiler
+    - list of exceptions is incorrect, program may be terminated unexceptedly
+- throw() removed from language & replaced by "noexcept"
+    - was depreciated in c++11
+    - throw(arg) removed in c++17
+    - throw() removed in c++20
+
+### noexcept keyword
+- equivalent to throw()
+- introduced in c++11
+- if exception is thrown, program terminates immediately
+- noexcept is a promise to caller that function will not throw any exception
+- noexcept function guarantees no throw 
+- helpful to write exception safe code which calls the function
+- adv:
+- helps compiler generate better optimized code
+    - more info about how code behaves
+    - not required to generate code for "stack unwinding"
+- modern c++ has optimized versions of some operators
+    - these are not intrinsically exception safe
+    - std lib algo will only use these operators if they are declared noexcept
+    - otherwise they will call non optimized versions which are slower
+- noexcept to be used possible
+    - if we are certain a function will not throw any excpetions
+    - we cannot do anything when exception is thrown (automatic termination)
+    - egs std::swap() & dtors
+- if virtual function is noexcept in base then override in derived class will also be noexcept
+- inheriting ctors will be noexcept if base ctor is noexcept
+- synthesized member function is noexcept if base version is noexcept
+- dtors are implicitly noexcept including base class dtor & all members of class dtor
+
+#### std::swap()
+- sort() internally uses swap()
+- its noexcept specified
+- consist copy as temporary obj or value to swap obj or values
+- we write custom swap function using std::swap making it inline so compiler will optimize it which avoid call to copy ctor & assignment operator
+- ctor & copy ctor are strong exception guarantee
+- dtor is also no throw guarantee (noexcept)
+- assignment can also be strong exception guarantee if used properly
+- we can std::swap in assignment opertor to avoid memory leak as swap is noexcept / no exception guarantee
+- this is called "copy-and-swap" idiom
+
+### RULE OF FIVE
+- c++11 rule of three becomes rule of 5
+- if a class needs to implement a dtor to function properly then pr0bably needs to implement copy & move operators as well
+- eg: class which allocates memory with new in its ctor
+    - dtor to call "delete" when objects are destroyed
+    - copy ctor to perform a deep copy when copying 
+    - assignment operator to perform deep copy 
+    - move operators to set argument's pointer to nullptr
+
+### Rule of Zero
+- if class does not decalre dtor then it does not need to declare copy or move operator either
+- for most classes rule of "zero" is sufficient
+    - do not declare any special member functions
+    - compiler synthesized defaults will be sufficient
+- compiler will also synthesize a default ctor
+    - unless we declare one ourselves
+    - sometimes useful to declare a default ctor which initializes the members with sensible values
+
+### Rule of Three / Five
+- if we need dtor eg release a resource then compiler generated copy/move operator will not be correct
+- in this case, we need to provide our own:
+    - dtor
+    - copy ctor
+    - copy assignment operator
+- we will probably need to provide a ctor as well eg to allocate memory
+- for performance, we should also add move operators
+otherwise copy operators will be used
+- Move only class:
+    - sometimes we need to declare dtor but dont want to copy the obj
+        - eg: class which manages network connection
+        - dtor closes connection
+        - we do not want to create duplicate of the     connection
+        - in this case, make the class make-only
+- Immovable class:
+    - we can make class immovable and uncopyable
+        - obj of this class cannot be passed to a function
+        - obj of this class cannot be returned by a function
+        - eg low level concurrency objects which release lock at the end of their scope
+    - to do this, delete the copy operators
+        - compiler will not synthesize the move operators
+        - any copy or move operation will invoke copy operators which are deleted
+
+### function arguments and move semantics
+- pass by value
+    - copy ctor called
+    - function has its own of callers object
+    - caller's obj is unmodified
+    - lvalue obj passed: 2 copies
+    - rvalue obj passed: 1 move + 1 copy
+- pass by const ref
+    - function has read only access to callers object
+    - callers object is unmodified
+- pass by non const ref & pass by address
+    - function has full access to callers object
+    - callers obj may be modified
+- pass by move
+    - move ctor is called
+    - function now owns caller obj data
+    - callers obj is unusable (until reassigned)
+
+### Relative costs:
+- pass by const ref
+    - lvalue obj passed: 1 copy
+    - rvalue obj passed: 1 copy
+- pass by value / pass by move
+    - lvalue obj passed: 2 copies
+    - rvalue obj passed: 1 move + 1 copy
+- pass by value then move:
+    - lvalue obj passed: 1 copy + 1 move
+    - rvalue obj passed: 2 moves
+- pass by rvalue ref:
+    - lvalue obj passed: not allowed
+    - rvalue obj passed: 1 move
+
+### forwarding references
+- programmers cannot directly create a nested reference
+    - int&& x = y; // error
+- however this compiler can do this internally for a type alias or template parameter
+    - using int_ref = int&
+    int i{42};
+    int_ref j{i};//j ref to i
+    int_ref& rj{j};// rj ref to (ref to int)
+- type of result is determined  by "reference collapsing"
+- reference to ( reference to int ) "collapses" into ref to int
+
+### reference collapsing rules
+- rvalue ref's can also appear in nested ref's
+- result is rval ref only if both are rval ref's
+    using lval_ref = int&
+    using rval_ref = int&&
+
+    lval_ref& ---> int&
+    lval_ref&& --> int&
+    rval_ref& ---> int&
+    rval_ref&& --> int&&
+
+### template argument reference
+- && has complete diff effects if the args is generic
+    template\<tynename T>
+    void func(T&& obj)
+
+    - obj is now forwarding ref
+    - it can be bound to rval or lval 
+- template argument deduce
+    - if lval is passed then 
+        Test&& --> Test& as per collapsing rules for ref's
+    - if rval is passed then 
+        Test&& --> Test&&
+
+### applications of perfect forwarding
+- eg make_pair
+- if passed is rval, then move ctor is called automatically
+- it is used by variadic templates to dispatch their arguments to functions which process them
+    - retains information whether the passed obj was an lval or rval
+
+### std::forward()
+- casts its args to rval ref
+    - std::forward\<T>(x); // = static_cast<T&&>(x)
+- if x is type T&, it will be left as lval to rval ref to T
+- if x is type T or T&&, it will be cast to an rval ref to T
+- forward does not cast its arg if its lval ref
+- forward requires parameter; move does not

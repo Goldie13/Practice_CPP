@@ -5,4 +5,6 @@ add_subdirectory(5_Special_Member_Functions_And_Operators)
 add_subdirectory(6_Algorithms_Lamda)
 add_subdirectory(7_Algorithms)
 add_subdirectory(8_containers)
+add_subdirectory(9_Error_handling_exceptions)
+add_subdirectory( 10_move_semantics )
 
