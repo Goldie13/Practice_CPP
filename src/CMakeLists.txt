@@ -7,4 +7,5 @@ add_subdirectory(7_Algorithms)
 add_subdirectory(8_containers)
 add_subdirectory(9_Error_handling_exceptions)
 add_subdirectory( 10_move_semantics )
+add_subdirectory( 11_smart_pointers )
 

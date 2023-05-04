@@ -345,3 +345,66 @@ otherwise copy operators will be used
 - if x is type T or T&&, it will be cast to an rval ref to T
 - forward does not cast its arg if its lval ref
 - forward requires parameter; move does not
+
+### Smart pointers
+- Drawbacks of traditional pointers: 
+    - No concept of ownership
+    - No dtor or it may release memory twice causing undefined behaviour
+    - for working stack memory, we can use reference instead of pointers
+    - we can use std::vector instead of variable sized arrays
+    - we can use "smart pointers" for working with heap memory
+    - for dynamic binding, we can use smart pointers & references
+- "Smart pointers" are classes which encapsulate allocatted memory
+    - class has private data member which is pointer to the allocated memory
+    - smart ptr obj has ownership of the allocated memory
+    - allocated memory can only be accessed through public member functions
+    - pointer arithmetic is not allowed
+- smart ptr are implemented using RAII
+    - memory allocated in ctor & released in dtor
+- smart ptrs save programmers lot of time
+    - both when coding & debugging
+
+- std::unique_ptr:
+    - appeared in c++11
+    - it cannot be copied or assigned
+    - however memory can be moved from one to other unique ptr(s)
+    - it solves problem with auto_ptr
+    - if we want to transfer memory allocation we have do it using std::move explicitly
+    - we cannot accidentally transfer the allocation or memory & it may result in compile error
+ 
+ - std::shared_ptr:
+    - shared_ptr obj can share its memory allocation with other shared_ptr objects
+    - reference counting is used to manage memory
+        - memory is only released when last obj which is using is destroyed
+    - similar to GC obj in other languages
+    - shared_ptr has more overhead over unique ptr 
+        - it should be only used when extra featured are needed
+
+### Polymorphism with unique_ptr
+- we can use unique_ptr instead of explicitly calling new
+    unique_ptr\<Base> pbase{ make_unique\<Derived>() }
+- allocated will be managed by unique_ptr
+    - pbase cannot be aliased
+    - pbase cannot be accidentally resetted, overwritten or ivalidated
+    - ptr arithmetic is not allowed on pbase
+    - delete is called automatically on pbase
+    - pbase cannot be used accidentally after deletion
+
+### handle body pattern
+- its like interface between clients <-> Interface <-> class
+- handle provides interface to all clients
+- body is an inner class which provides implementation
+- client creates handle obj, handle creates body obj
+- when client calls member function on handle obj call is forwarded to the body
+- pImpl idiom is one way of doing it
+- handle has a private member to body obj
+- "Pointer to Implementation" - pImpl
+    - also known as "compiler firewall"
+
+
+### shared_ptr and threads
+- when diff threds copy or assign shared_ptr objs which use same control block there is data race
+- to prevent this we have atomic
+- to protect shared allocated resource, its programmer responsibility
+    - c++20 has atomic shared_ptr
+- operations on atomic variable takes long time even in threaded code

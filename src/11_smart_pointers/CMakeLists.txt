@@ -1,0 +1,6 @@
+add_executable( 111_unique_pointers 111_unique_pointers.cpp )
+add_executable( 112_unique_pointers 112_unique_pointers.cpp )
+add_executable( 113_factory_patter_unique_pointers 113_factory_patter_unique_pointers.cpp )
+add_executable( 114_pImpl 114_pImpl.cpp )
+add_executable( 115_shared_ptr 115_shared_ptr.cpp )
+add_executable( 116_weak_ptr 116_weak_ptr.cpp )
