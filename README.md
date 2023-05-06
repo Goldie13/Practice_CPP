@@ -408,3 +408,113 @@ otherwise copy operators will be used
 - to protect shared allocated resource, its programmer responsibility
     - c++20 has atomic shared_ptr
 - operations on atomic variable takes long time even in threaded code
+
+### chrono
+- \<ctime> inherited from C & poorly designed
+- C++11 introduced chrono lib for time handling
+    - more precise but syntax complex
+- C++20 extends chrono which handles date
+- clock() returns no of "clock ticks" since the program start
+    - can be used for intervals of upto few minutes
+    - Precision is implementation-defined (usually 1 microsecond)
+- time() takes a var of type time_t by address
+    - sets this arg to no of seconds since 1970
+    - can be used for longer intervals (upto several decades)
+    - precision is 1 second
+- defined \<chrono> & used as std chrono namespace
+
+- 3 important concepts:
+    - start date (known as epoch) & tick rate (once per second)
+    - timepoint: no of clock ticks since the epoch at a given point of time
+    - Duration: interval between two time points measured in clock ticks
+
+- chrono has 3 clocks:
+    - system_clock: using HW clock
+    - steady_clock: idealized clock which only goes forward, one tick at a time("monotonic" )
+    - high_resolution_clock: clock with shortest tick period supported by the system. Implementation-defined. Usually an alias for system_clock or steady_clock
+
+### bitset<8>
+- set()
+    - b.set()               // set all bits to true
+    - b.set(0)              // set bit(0) to true
+    - b.set(0, false)       // set bit(0) to false
+- reset()
+    - b.reset()             // set all bits to false
+    - b.reset(7)            // set bit(7) to false
+- flip()
+    - b.flip()              // invert all bits
+    - b.flip(7)             // invert bit(7)
+- all(): returns true if all bits are set / true
+- any(): returns true if any bit is set / true
+- none(): returns true if none bits are set / true
+- count(): returns no of bits set / true
+
+### std::tuple:
+- similar to std::pair have any fixed no of elements
+- elements are accessed by index not by member name
+- can create tuple obj explicitly or make_tuple
+- to access tuple member use get() function like get\<index>(tupleName)
+- so template parameter is index & arg is tuple obj var
+- c++14 allows parameter as type
+- tie(x,y,z) = tupleName for unpacking tuple
+- cannot use auto in tie as compiler cant deduce it c++11/14
+- in c++17 it can deduce tuple
+
+### c++11 std::complex <complex>
+- templated type
+    complex\<double>q{3.0,4.0};
+    q.real();
+    q.imag();
+- c++14 has literals suffix like 'i'
+    auto s = 2i;
+    auto z = 2+2i;
+    p+=4i;
+
+### application of member function objects
+- concurrency
+    - needed to run member functions in their own thread
+- runtime decision
+- choose which object is used
+    - use bind() args to a member func call
+    - use a placeholder for the caller to provide obj
+- choose which member function is called
+    - make a container of member function pointers
+- use switch statements or if/else to make the decision
+
+### interfacing to c
+- many interface written in c
+    - OS api
+    - database api
+    - third party libs & fw's
+- c is a complete subset of cpp
+- any c program is legal in cpp
+- solution is to compile source code in cpp compiler
+
+### RTII
+- runtime type information relates to dynamic of the obj
+    - typeid
+        - defined in \<typeinfo>
+        - mainly used in rumtime polymorphism
+    - type_info
+        - defined in \<typeinfo>
+        - returns type_info object
+        - containes info about the dynamic type of obj
+        - it also has hash_code info function
+        - useful to check hash_code of the objects of dynamic type
+    - dynamic_cast
+        - converts ptr to base to a ptr to derived
+            - also applies to ref's
+        - allows to check at runtime whether base-to-derived conversion possible
+        - only works if dynamic type of base is derived
+        - if it fails it returns nullptr
+            - for ref's it causes std::bad_cast exception
+        - use it to call derived member function when not defined in base class 
+
+### attriutes
+- compiler specific directives
+    - #pragma
+    - __attribute
+    - __declspec
+- \[[fallthrough]]
+- \[[nodiscard]]
+- \[[maybe_unused]]

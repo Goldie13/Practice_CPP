@@ -1,0 +1,6 @@
+add_executable( 121_chrono 121_chrono.cpp )
+add_executable( 122_bitsets 122_bitsets.cpp )
+add_executable( 123_tuple 123_tuple.cpp )
+add_executable( 124_union 124_union.cpp )
+# add_executable( 125_bind 125_bind.cpp )
+add_executable( 126_callable_objs 126_callable_objs.cpp )
