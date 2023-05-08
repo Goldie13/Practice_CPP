@@ -518,3 +518,80 @@ otherwise copy operators will be used
 - \[[fallthrough]]
 - \[[nodiscard]]
 - \[[maybe_unused]]
+
+### compile time programming
+- Templates
+    - clumsy & verbose syntax
+    - logical operations are complicated
+    - incomprehensible error messages
+    - no debugger support
+- C++11 also provides constexpr
+    - compiler executes normal c++ code
+    - understandable error messages
+### constexpr c++
+- this indicates that an var is a constant expression
+- constexpr var is
+    - evaluated at compile time
+    - connot be modified
+        constexpr int i{3};
+- args are const expressions
+- return constant expression
+- implemented using a compile time interpreter which supports most of c++
+- written in normal c++ code
+- use constexpr before its return type
+- it must be "pure"
+    - cannot modify its args
+    - cannot modify global & static vars
+- by default inline
+    - multiple definitions are allowed
+    - can be used in header-only libs
+- applications: 
+    - used for performing calculations at compile time
+    - calculation is done once ( during dev process ) instead of every time program runs
+    - no runtime overhead
+    - reduces energy consumption
+
+constexpr      |        const      |
+-------------   | ---------------  |
+cannot be modified | known at compile time & cannot be modifed
+mainly used for func args | for computing values for constants
+compiler will not allow func to modify the value | used to improve performance by doing computations at compile time |
+
+### variadic functions
+- can take any no of args
+- last parameter is ..
+    int printf(const char* fmt, ... )
+- not type safe
+- only works properly with c types
+- args are processed at run time
+- c++11 introduced variadic template functions
+- list of template variadic parameter types is written as tynename... T
+- list of function parameter types is written as T...
+- these are known as "parameter packs"
+    template\<tynename... Args>;
+    void func(Args... args);
+- parameter packs are only available at compile time
+    - we can use sizeof...(): to get no of elements
+    - use make_tuple() to store them inan std::tuple
+    - iterate over elements, using template reduction
+
+### assert()
+- c++ inherited from c
+    - defined in <cassert>
+- checks args at runtime. if args is zero, it calls std:: abort. otherwise program continues normal execution
+- useful for checking invariants
+    - assert(x==42)
+- can be disabled by #define NDEBUG 
+- c++11 static_assert() 
+    - it takes bool expression and string literal
+    - if false, compilation stops & string literal will be used in the compiler error message
+    - otherwise compilation continues normally
+    - mainly used for template metaproramming
+
+
+### decltype
+- was added in c++11
+- can be used at compile time
+- gives type of arg
+- arg must be an expression or arg
+- some compilers have a non std extension "typeof" which is similar

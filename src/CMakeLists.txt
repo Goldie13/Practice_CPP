@@ -9,4 +9,5 @@ add_subdirectory(9_Error_handling_exceptions)
 add_subdirectory( 10_move_semantics )
 add_subdirectory( 11_smart_pointers )
 add_subdirectory( 12_Miscellanous_features )
+add_subdirectory( 13_compile_time_programming )
 
