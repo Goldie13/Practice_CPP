@@ -1,0 +1,2 @@
+add_executable( 14_1_W_simple_shared_memory 14_1_W_simple_shared_memory.cpp )
+add_executable( 14_2_R_simple_shared_memory 14_2_R_simple_shared_memory.cpp )

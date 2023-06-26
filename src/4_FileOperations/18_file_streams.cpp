@@ -26,7 +26,7 @@ int main()
 
     //reading the file
     string path_in{"/root/Anosh/Practice_CPP/sample_in.txt"};
-    ifstream ifile; //define file as a var to bound to sample.txt
+    ifstream ifile; //define ifile as a var to bound to sample.txt
     ifile.open(path_in);
     if(ifile.is_open()) {
         string text{""};
